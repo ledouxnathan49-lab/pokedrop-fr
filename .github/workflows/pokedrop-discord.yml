@@ -1,0 +1,19 @@
+name: PokéDrop Discord
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Envoyer une alerte Discord
+        env:
+          WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          curl -H "Content-Type: application/json" \
+          -X POST \
+          -d '{"username":"PokéDrop FR","content":"🚨 Vérification automatique PokéDrop FR terminée. Les alertes Discord sont actives. 🎉"}' \
+          "$WEBHOOK"
