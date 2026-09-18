@@ -52,26 +52,26 @@ for p in PRODUCTS:
             if sent.get(p["url"]) != "sent":
                 requests.post(
                     WEBHOOK,
-                    json={
-                        "username":"PokéDrop FR",
-                        "embeds":[{
-                            "title":f"🚨 Réassort détecté",
-                            "description":f"**{p['name']}** chez **{p['store']}**",
-                            "color":3066993,
-                            "fields":[
-                                {"name":"🏪 Magasin","value":p["store"],"inline":True},
-                                {"name":"🔗 Lien","value":p["url"],"inline":False}
-                            ]
-                        }]
-                    },
-                    timeout=20
-                )
-                sent[p["url"]] = "sent"
-        else:
-            sent[p["url"]] = "waiting"
-
-    except:
-        pass
-
-with open(STATE, "w") as f:
-    json.dump(sent, f, indent=2)
+                        json={
+            "username":"PokéDrop FR",
+            "avatar_url":"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png",
+            "content":"## 🚨 Nouveau réassort détecté !",
+            "embeds":[{
+                "title":f"🔥 {p['name']}",
+                "description":f"**Disponible chez {p['store']}**",
+                "url":p["url"],
+                "color":3066993,
+                "thumbnail":{
+                    "url":"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/master-ball.png"
+                },
+                "fields":[
+                    {"name":"🟢 Statut","value":"**EN STOCK**","inline":True},
+                    {"name":"🏪 Magasin","value":p["store"],"inline":True},
+                    {"name":"⏰ Détecté","value":"À l'instant","inline":True},
+                    {"name":"🛒 Acheter","value":f"[Voir le produit]({p['url']})","inline":False}
+                ],
+                "footer":{
+                    "text":"PokéDrop Pro • Réassorts | Sorties | Bons plans"
+                }
+            }]
+        },
