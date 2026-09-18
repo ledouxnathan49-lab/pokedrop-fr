@@ -64,17 +64,23 @@ for card in cards:
         json={
             "username": "PokéDrop FR",
             "embeds": [{
-                "title": "🔥 Réassort détecté",
-                "description": f"**{title}**",
+                            "title": f"🛒 {title}",
+                "description": f"**Disponible chez {STORE}**",
                 "url": link,
-                "color": 3066993,
-                "thumbnail": {"url": img} if img else {},
+                "color": 15158332,
+                "thumbnail": {"url": img} if img else None,
                 "fields": [
-                    {"name": "💰 Prix", "value": price, "inline": True},
-                    {"name": "🏪 Magasin", "value": "Leclerc", "inline": True},
-                    {"name": "🟢 Statut", "value": "Disponible", "inline": True}
+                    {"name": "💰 Prix", "value": price or "Non indiqué", "inline": True},
+                    {"name": "🏪 Store", "value": STORE, "inline": True},
+                    {"name": "🟢 Statut", "value": "En stock", "inline": True},
+                    {"name": "🔗 Lien", "value": f"[Ouvrir le produit]({link})", "inline": False}
                 ],
-                "footer": {"text": "PokéDrop V7 • Lien direct vers le produit"}
+                                "footer": {
+                    "text": "PokéDrop FR • Temps réel"
+                }
+            }]
+        }
+    )
             }]
         }
     )
