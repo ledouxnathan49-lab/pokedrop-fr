@@ -1,6 +1,8 @@
-import json
+
 import os
+import json
 import requests
+from bs4 import BeautifulSoup
 
 STATE = "state.json"
 WEBHOOK = os.getenv("DISCORD_WEBHOOK")
@@ -9,68 +11,7 @@ HEADERS = {
     "User-Agent": "Mozilla/5.0"
 }
 
-PRODUCTS = [
-    {
-        "name": "ETB Pokémon 30 ans",
-        "store": "Leclerc",
-    "url": "https://www.e.leclerc/recherche?q=30%20anniversaire%20pokemon"
-    },
-    {
-        "name": "UPC Pokémon 30 ans",
-        "store": "Leclerc",
-        "url": "https://www.e.leclerc/recherche?q=pokemon+30+ans"
-    },
-    {
-    "name": "Pokémon 30 ans",
-    "store": "Carrefour",
-    "url": "https://www.carrefour.fr/s?q=30%20anniversaire%20pokemon"
-},
-    {
-        "name": "Pokémon",
-        "store": "Fnac",
-        "url": "https://www.fnac.com/SearchResult/ResultList.aspx?Search=pokemon"
-    },
-    {
-        "name": "Pokémon",
-        "store": "Cultura",
-        "url": "https://www.cultura.com/recherche/pokemon"
-    },
-    {
-        "name": "Pokémon",
-        "store": "Micromania",
-        "url": "https://www.micromania.fr/recherche/?q=pokemon"
-    },
-    {
-        "name": "Pokémon",
-        "store": "King Jouet",
-        "url": "https://www.king-jouet.com/recherche?text=pokemon"
-    },
-    {
-        "name": "Pokémon",
-        "store": "Smyths",
-        "url": "https://www.smythstoys.com/fr/fr-fr/search/?text=pokemon"
-    },
-    {
-        "name": "Pokémon",
-        "store": "JouéClub",
-        "url": "https://www.joueclub.fr/recherche?text=pokemon"
-    },
-    {
-        "name": "Pokémon Center",
-        "store": "Pokémon Center",
-        "url": "https://www.pokemoncenter.com/"
-    }
-]
-
-KEYWORDS = [
-    "ajouter au panier",
-    "acheter maintenant",
-    "buy now",
-    "add to cart",
-    "en stock",
-    "précommande",
-    "pre-order"
-]
+URL = "https://www.e.leclerc/recherche?q=30%20anniversaire%20pokemon"
 
 try:
     with open(STATE, "r") as f:
@@ -78,62 +19,67 @@ try:
 except:
     sent = {}
 
-for p in PRODUCTS:
-    try:
-        r = requests.get(p["url"], headers=HEADERS, timeout=15)
+r = requests.get(URL, headers=HEADERS, timeout=20)
+soup = BeautifulSoup(r.text, "html.parser")
 
-        if r.status_code != 200:
-            continue
+cards = soup.select("article")
 
-        html = r.text.lower()
+for card in cards:
+    text = card.get_text(" ", strip=True)
 
-        if any(k in html for k in KEYWORDS):
+    if "30" not in text or "pokémon" not in text.lower():
+        continue
 
-            if sent.get(p["url"]) != "sent":
+    title = card.select_one("h2,h3")
+    title = title.get_text(strip=True) if title else "Pokémon 30 ans"
 
-                requests.post(
-                    WEBHOOK,
-                    json={
-                        "username": "PokéDrop FR",
-                        "embeds": [{
-                            "title": "🚨 Réassort détecté",
-                            "description": f"**{p['name']}** est disponible !",
-                            "url": p["url"],
-                            "color": 3066993,
-                            "thumbnail": {
-                                "url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"
-                            },
-                            "fields": [
-                                {
-                                    "name": "🟢 Statut",
-                                    "value": "En stock",
-                                    "inline": True
-                                },
-                                {
-                                    "name": "🏪 Magasin",
-                                    "value": p["store"],
-                                    "inline": True
-                                },
-                                {
-                                    "name": "🛒 Acheter",
-                                    "value": f"[Ouvrir le produit]({p['url']})",
-                                    "inline": False
-                                }
-                            ],
-                            "footer": {
-                                "text": "PokéDrop Pro • Réassort automatique"
-                            }
-                        }]
-                    }
-                )
+    price = "Prix inconnu"
+    for span in card.select("span"):
+        t = span.get_text(" ", strip=True)
+        if "€" in t:
+            price = t
+            break
 
-                sent[p["url"]] = "sent"
+    img = ""
+    image = card.select_one("img")
+    if image and image.get("src"):
+        img = image["src"]
+        if img.startswith("//"):
+            img = "https:" + img
 
-        else:
-            sent[p["url"]] = "waiting"
+    link = URL
+    a = card.select_one("a[href]")
+    if a:
+        href = a["href"]
+        if href.startswith("/"):
+            link = "https://www.e.leclerc" + href
+        elif href.startswith("http"):
+            link = href
 
-    except Exception:
-        pass
+    if sent.get(link):
+        continue
+
+    requests.post(
+        WEBHOOK,
+        json={
+            "username": "PokéDrop FR",
+            "embeds": [{
+                "title": "🔥 Réassort détecté",
+                "description": f"**{title}**",
+                "url": link,
+                "color": 3066993,
+                "thumbnail": {"url": img} if img else {},
+                "fields": [
+                    {"name": "💰 Prix", "value": price, "inline": True},
+                    {"name": "🏪 Magasin", "value": "Leclerc", "inline": True},
+                    {"name": "🟢 Statut", "value": "Disponible", "inline": True}
+                ],
+                "footer": {"text": "PokéDrop V7 • Lien direct vers le produit"}
+            }]
+        }
+    )
+
+    sent[link] = True
 
 with open(STATE, "w") as f:
     json.dump(sent, f, indent=2)
