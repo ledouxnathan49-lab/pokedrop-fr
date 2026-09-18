@@ -27,9 +27,18 @@ except:
     sent = {}
 
 for p in PRODUCTS:
-    r = requests.get(p["url"], headers={"User-Agent":"Mozilla/5.0"}, timeout=20)
+    r = requests.get(p["url"], headers={"User-Agent": "Mozilla/5.0"})
 
-    if r.status_code == 200:
+    html = r.text.lower()
+
+    stock = any(mot in html for mot in [
+        "ajouter au panier",
+        "buy now",
+        "en stock",
+        "acheter maintenant"
+    ])
+
+    if stock:
         if sent.get(p["url"]) != "sent":
             requests.post(WEBHOOK, json={
                 "username":"PokéDrop FR",
