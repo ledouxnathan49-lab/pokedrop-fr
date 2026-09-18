@@ -68,7 +68,7 @@ for card in cards:
                 "description": f"**Disponible chez {STORE}**",
                 "url": link,
                 "color": 15158332,
-                "thumbnail": {"url": img} if img else None,
+                "thumbnail": {"url": img} if img else {},
                 "fields": [
                     {"name": "💰 Prix", "value": price or "Non indiqué", "inline": True},
                     {"name": "🏪 Store", "value": STORE, "inline": True},
