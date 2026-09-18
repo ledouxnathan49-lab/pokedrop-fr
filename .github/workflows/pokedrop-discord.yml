@@ -12,8 +12,8 @@ jobs:
       - name: Envoyer une alerte Discord
         env:
           WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        run: |
-          curl -H "Content-Type: application/json" \
-          -X POST \
-          -d '{"username":"PokéDrop FR","content":"🚨 Vérification automatique PokéDrop FR terminée. Les alertes Discord sont actives. 🎉"}' \
-          "$WEBHOOK"
+        run:
+  curl -X POST \
+    -H "Content-Type: application/json" \
+    -d "{\"content\":\"🎁 PokéDrop détecté ! $(date -u +"%H:%M UTC")\"}" \
+    "$WEBHOOK"
