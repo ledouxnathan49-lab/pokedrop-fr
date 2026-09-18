@@ -51,27 +51,27 @@ for p in PRODUCTS:
         if any(k in html for k in KEYWORDS):
             if sent.get(p["url"]) != "sent":
                 requests.post(
-                    WEBHOOK,
-                        json={
-            "username":"PokéDrop FR",
-            "avatar_url":"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png",
-            "content":"## 🚨 Nouveau réassort détecté !",
-            "embeds":[{
-                "title":f"🔥 {p['name']}",
-                "description":f"**Disponible chez {p['store']}**",
-                "url":p["url"],
-                "color":3066993,
-                "thumbnail":{
-                    "url":"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/master-ball.png"
-                },
-                "fields":[
-                    {"name":"🟢 Statut","value":"**EN STOCK**","inline":True},
-                    {"name":"🏪 Magasin","value":p["store"],"inline":True},
-                    {"name":"⏰ Détecté","value":"À l'instant","inline":True},
-                    {"name":"🛒 Acheter","value":f"[Voir le produit]({p['url']})","inline":False}
-                ],
-                "footer":{
-                    "text":"PokéDrop Pro • Réassorts | Sorties | Bons plans"
-                }
-            }]
-        },
+    WEBHOOK,
+    json={
+        "username": "PokéDrop FR",
+        "embeds": [{
+            "title": "🚨 Réassort détecté",
+            "description": f"**{p['name']}** est disponible !",
+            "url": p["url"],
+            "color": 3066993,
+            "thumbnail": {
+                "url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"
+            },
+            "fields": [
+                {"name": "🟢 Statut", "value": "En stock", "inline": True},
+                {"name": "🏪 Magasin", "value": p["store"], "inline": True},
+                {"name": "🛒 Acheter", "value": f"[Ouvrir le produit]({p['url']})", "inline": False}
+            ],
+            "footer": {
+                "text": "PokéDrop Pro • Réassort automatique"
+            }
+        }]
+    }
+)
+
+sent[p["url"]] = "sent"
