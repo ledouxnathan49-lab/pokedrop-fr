@@ -8,9 +8,25 @@ STATE = "state.json"
 
 URL = "https://www.e.leclerc/recherche?q=pokemon%2030%20ans"
 
+KEYWORDS = [
+    "etb",
+    "coffret dresseur d'élite",
+    "elite trainer box",
+    "upc",
+    "ultra premium",
+    "booster bundle",
+    "lot de 6 boosters",
+    "display",
+    "pokemon 30 ans",
+    "evolutions prismatiques",
+    "nymphali",
+    "amphinobi"
+]
+
 HEADERS = {
     "User-Agent": "Mozilla/5.0"
 }
+
 
 try:
     with open(STATE, "r") as f:
