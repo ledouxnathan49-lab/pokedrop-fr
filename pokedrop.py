@@ -76,7 +76,9 @@ for card in cards:
                     {"name": "🔗 Lien", "value": f"[Ouvrir le produit]({link})", "inline": False}
                 ],
                                 "footer": {
-                    "text": "PokéDrop FR • Temps réel"
+                    "text": "PokéDrop FR 
+                    
+                • Temps réel"
                 }
             }]
         }
