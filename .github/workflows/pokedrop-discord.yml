@@ -8,11 +8,12 @@ on:
 jobs:
   notify:
     runs-on: ubuntu-latest
+
     steps:
       - name: Envoyer une alerte Discord
         env:
           WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-              run: |
+        run: |
           curl -X POST "$WEBHOOK" \
             -H "Content-Type: application/json" \
             -d '{
