@@ -13,7 +13,7 @@ PRODUCTS = [
     {
         "name": "ETB Pokémon 30 ans",
         "store": "Leclerc",
-        "url": "https://www.e.leclerc/recherche?q=pokemon+30+ans"
+    "url": "https://www.e.leclerc/recherche?q=30%20anniversaire%20pokemon"
     },
     {
         "name": "UPC Pokémon 30 ans",
@@ -21,10 +21,10 @@ PRODUCTS = [
         "url": "https://www.e.leclerc/recherche?q=pokemon+30+ans"
     },
     {
-        "name": "Pokémon 30 ans",
-        "store": "Carrefour",
-        "url": "https://www.carrefour.fr/s?q=pokemon"
-    },
+    "name": "Pokémon 30 ans",
+    "store": "Carrefour",
+    "url": "https://www.carrefour.fr/s?q=30%20anniversaire%20pokemon"
+},
     {
         "name": "Pokémon",
         "store": "Fnac",
