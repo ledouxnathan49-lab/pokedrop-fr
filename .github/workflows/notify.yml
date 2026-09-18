@@ -1,4 +1,4 @@
-name: PokéDrop Discord
+name: PokéDrop V6
 
 on:
   workflow_dispatch:
@@ -9,11 +9,12 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
-      - name: Envoyer une alerte Discord
+      - name: Vérification PokéDrop
         env:
           WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK }}
         run: |
+          DATE=$(date -u +"%H:%M UTC")
           curl -H "Content-Type: application/json" \
             -X POST \
-            -d '{"content":"🟢 PokéDrop FR est en ligne !"}' \
+            -d "{\"content\":\"🟢 PokéDrop V6 actif — vérification automatique lancée ($DATE). Sources prévues : Leclerc, Carrefour, Cultura, Amazon, Micromania.\"}" \
             "$WEBHOOK_URL"
