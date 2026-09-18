@@ -41,7 +41,13 @@ cards = soup.select("a[href*='/fp/']")
 
 for card in cards:
     title = card.get_text(" ", strip=True)
+    title_lower = title.lower()
+
+        if not any(keyword in title_lower for keyword in KEYWORDS):
+        continue
+
     href = card.get("href")
+    
 
     if not href:
         continue
