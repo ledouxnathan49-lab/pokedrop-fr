@@ -1,37 +1,24 @@
-name: PokéDrop Discord
+name: PokéDrop V6
 
 on:
   schedule:
-    - cron: '*/30 * * * *'
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 jobs:
-  notify:
+  scan:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Envoyer une alerte Discord
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - run: pip install requests beautifulsoup4 lxml
+
+      - name: Lancer PokéDrop
         env:
-          WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        run: |
-          curl -X POST "$WEBHOOK" \
-            -H "Content-Type: application/json" \
-            -d '{
-              "username":"PokéDrop FR",
-              "embeds":[
-                {
-                  "title":"🎉 PokéDrop détecté",
-                  "description":"Un produit Pokémon est disponible !",
-                  "color":3066993,
-                  "fields":[
-                    {
-                      "name":"🛒 Magasins surveillés",
-                      "value":"Leclerc, Carrefour, Amazon, Micromania, Cultura"
-                    }
-                  ],
-                  "footer":{
-                    "text":"PokéDrop FR • Surveillance 24/7"
-                  }
-                }
-              ]
-            }'
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: python pokedrop.py
