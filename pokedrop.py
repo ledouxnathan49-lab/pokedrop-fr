@@ -27,7 +27,6 @@ HEADERS = {
     "User-Agent": "Mozilla/5.0"
 }
 
-
 try:
     with open(STATE, "r") as f:
         sent = json.load(f)
@@ -43,11 +42,10 @@ for card in cards:
     title = card.get_text(" ", strip=True)
     title_lower = title.lower()
 
-        if not any(keyword in title_lower for keyword in KEYWORDS):
+    if not any(keyword in title_lower for keyword in KEYWORDS):
         continue
 
     href = card.get("href")
-    
 
     if not href:
         continue
@@ -85,9 +83,7 @@ for card in cards:
                     {"name": "🟢 Statut", "value": "En stock", "inline": True},
                     {"name": "🔗 Lien", "value": f"[Ouvrir le produit]({link})", "inline": False}
                 ],
-                "footer": {
-                    "text": "PokéDrop FR • Temps réel"
-                }
+                "footer": {"text": "PokéDrop FR • Temps réel"}
             }]
         }
     )
